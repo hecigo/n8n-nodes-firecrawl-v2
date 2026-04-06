@@ -1,0 +1,61 @@
+{
+	"name": "n8n-nodes-firecrawl-v2",
+	"version": "1.0.11",
+	"description": "n8n community node for Firecrawl v2 API (Cloud + self-hosted) - scrape, crawl, map, search, extract, and batch operations",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"firecrawl",
+		"web-scraping",
+		"crawling",
+		"data-extraction",
+		"ai-agent",
+		"search"
+	],
+	"license": "MIT",
+	"homepage": "https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/",
+	"author": {
+		"name": "THE NEXOVA",
+		"email": "corbin@thenexova.com",
+		"url": "https://thenexova.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/thenexova/n8n-nodes-firecrawl-v2.git"
+	},
+	"main": "index.js",
+	"scripts": {
+		"prebuild": "rimraf dist",
+		"build": "tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint nodes credentials package.json",
+		"lintfix": "eslint nodes credentials package.json --fix",
+		"prepublishOnly": "npm run build"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/FirecrawlApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Firecrawl/Firecrawl.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^25.5.0",
+		"@typescript-eslint/parser": "^7.0.0",
+		"eslint": "^8.56.0",
+		"gulp": "^4.0.2",
+		"n8n-workflow": "^1.0.0",
+		"prettier": "^3.2.0",
+		"rimraf": "^5.0.0",
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"node": "n8n-nodes-firecrawl-v2.firecrawl",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage"],
+	"subcategories": {
+		"Data & Storage": ["Other Data & Storage"]
+	},
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.firecrawl.dev"
+			}
+		]
+	}
+}
