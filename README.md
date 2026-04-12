@@ -4,7 +4,9 @@ Community node for [Firecrawl](https://firecrawl.dev) **v2 API** on n8n. Scrape,
 
 Works with both **Firecrawl Cloud** and **self-hosted** instances.
 
-Built by [THE NEXOVA](https://thenexova.com). Full guide: [n8n Firecrawl Node: Web Scraping, Crawling, and AI Extraction Guide](https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/)
+Built by [hecigo](https://hecigo.com) — Middleware Lab for Global Expansion.
+
+**Guides:** [Setup Guide (EN)](https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/) | [Hướng dẫn chi tiết (VI)](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec)
 
 ## Installation
 
@@ -244,7 +246,9 @@ Schedule Trigger (daily)
 
 ## About
 
-[THE NEXOVA](https://thenexova.com) builds automation infrastructure for businesses. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://thenexova.com/contact/).
+[hecigo](https://hecigo.com) is a middleware lab researching and deploying integration solutions that connect Vietnamese businesses to global systems. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://hecigo.com/#contact).
+
+Consulting partner: [THE NEXOVA](https://thenexova.com) — Bridge Strategy to Execution.
 
 ## License
 

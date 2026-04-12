@@ -13,15 +13,15 @@
 		"search"
 	],
 	"license": "MIT",
-	"homepage": "https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/",
+	"homepage": "https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec",
 	"author": {
-		"name": "THE NEXOVA",
-		"email": "corbin@thenexova.com",
-		"url": "https://thenexova.com"
+		"name": "hecigo",
+		"email": "contact@hecigo.com",
+		"url": "https://hecigo.com"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thenexova/n8n-nodes-firecrawl-v2.git"
+		"url": "https://github.com/hecigo/n8n-nodes-firecrawl-v2.git"
 	},
 	"main": "index.js",
 	"scripts": {

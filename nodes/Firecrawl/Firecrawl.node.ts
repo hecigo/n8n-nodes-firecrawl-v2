@@ -8,7 +8,7 @@ import {
 	IHttpRequestOptions,
 } from 'n8n-workflow';
 
-const HELP_NOTICE = 'Need help? Visit https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/ or contact THE NEXOVA team at contact@thenexova.com';
+const HELP_NOTICE = 'Need help? Visit https://hecigo.com or contact hecigo team at contact@hecigo.com';
 
 export class Firecrawl implements INodeType {
 	description: INodeTypeDescription = {
