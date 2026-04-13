@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-firecrawl-v2",
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"description": "n8n community node for Firecrawl v2 API (Cloud + self-hosted) - scrape, crawl, map, search, extract, and batch operations",
 	"keywords": [
 		"n8n-community-node-package",
