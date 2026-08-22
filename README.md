@@ -6,7 +6,7 @@ Works with both **Firecrawl Cloud** and **self-hosted** instances.
 
 Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
-**Guide:** [Hướng dẫn chi tiết (Vietnamese)](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec)
+**Guides:** [Firecrawl on n8n: picking the right operation](https://hecigo.com/blog/n8n-firecrawl-node-choosing-the-right-operation/) (English) · [Hướng dẫn chi tiết](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec) (Tiếng Việt)
 
 ## Installation
 
