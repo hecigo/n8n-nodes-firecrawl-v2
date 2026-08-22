@@ -6,7 +6,7 @@ Works with both **Firecrawl Cloud** and **self-hosted** instances.
 
 Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
-**Guides:** [Setup Guide (EN)](https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/) | [Hướng dẫn chi tiết (VI)](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec)
+**Guide:** [Hướng dẫn chi tiết (Vietnamese)](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec)
 
 ## Installation
 
@@ -246,7 +246,7 @@ Schedule Trigger (daily)
 
 ## About
 
-[hecigo](https://hecigo.com) is a middleware lab researching and deploying integration solutions that connect Vietnamese businesses to global systems. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://hecigo.com/#contact).
+[hecigo](https://hecigo.com) is a middleware and integration lab. We build and run the layer that makes disconnected business systems talk to each other — with the right data, and nothing lost. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://hecigo.com/#contact).
 
 Consulting partner: [THE NEXOVA](https://thenexova.com) — Bridge Strategy to Execution.
 
