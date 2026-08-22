@@ -4,7 +4,7 @@ Community node for [Firecrawl](https://firecrawl.dev) **v2 API** on n8n. Scrape,
 
 Works with both **Firecrawl Cloud** and **self-hosted** instances.
 
-Built by [hecigo](https://hecigo.com) — Middleware Lab for Global Expansion.
+Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
 **Guides:** [Setup Guide (EN)](https://thenexova.com/n8n-firecrawl-node-web-scraping-crawling-and-ai-extraction-guide/) | [Hướng dẫn chi tiết (VI)](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec)
 
