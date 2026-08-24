@@ -6,7 +6,7 @@ Works with both **Firecrawl Cloud** and **self-hosted** instances.
 
 Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
-**Guides:** [Firecrawl on n8n: picking the right operation](https://hecigo.com/blog/n8n-firecrawl-node-choosing-the-right-operation/) (English) · [Hướng dẫn chi tiết](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec) (Tiếng Việt)
+**Guides:** [Firecrawl on n8n: picking the right operation](https://hecigo.com/blog/n8n-firecrawl-node-choosing-the-right-operation/) (English) · [Detailed Guide](https://hecigo.com/blog/toi-uu-hoa-quy-trinh-thu-thap-du-lieu-web-cho-doanh-nghiep-viet-voi-n8n-va-firec) (Vietnamese)
 
 ## Installation
 
@@ -92,7 +92,7 @@ Crawl an entire website. Async job with optional polling.
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `limit` | `100` | Max pages |
+| `limit` | `50` | Max pages. Firecrawl's own default is 10000 if you omit the option. |
 | `maxDiscoveryDepth` | `2` | Max link depth |
 | `includePaths` | | Regex patterns to include (e.g., `/blog/*`) |
 | `excludePaths` | | Regex patterns to exclude (e.g., `/admin/*`) |
@@ -125,7 +125,7 @@ Discover all URLs on a website without scraping content. Faster than Crawl.
 | `mapUrl` | | Starting URL (required) |
 | `search` | | Search query to rank by relevance |
 | `includeSubdomains` | `true` | Include subdomain URLs |
-| `limit` | `5000` | Max URLs (max: 100,000) |
+| `limit` | `50` | Max URLs, capped at 100,000 |
 | `ignoreQueryParameters` | `true` | Deduplicate by stripping query strings |
 | `ignoreCache` | `false` | Bypass sitemap cache |
 
@@ -138,7 +138,7 @@ Web search with optional page scraping.
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `searchQuery` | | Keywords, max 500 chars (required) |
-| `limit` | `5` | Results count (1-100) |
+| `limit` | `50` | Results count, capped at 100 |
 | `country` | `US` | ISO country code |
 | `tbs` | Any Time | Time filter: past hour/day/week/month/year |
 | `formats` | `markdown` | Content format for results |
@@ -240,7 +240,9 @@ Schedule Trigger (daily)
 
 ## Compatibility
 
-- n8n: >= 1.0.0
+- n8n: **>= 1.83**. The node imports `NodeConnectionTypes` from `n8n-workflow`, which first
+  shipped in `n8n-workflow@1.83.0`. On older n8n the package fails to load. Stay on `1.0.17`
+  if you cannot upgrade n8n.
 - Firecrawl API: v2
 - Tested with self-hosted Firecrawl and Firecrawl Cloud
 

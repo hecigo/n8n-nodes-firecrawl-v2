@@ -1,5 +1,6 @@
 import {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -9,6 +10,10 @@ export class FirecrawlApi implements ICredentialType {
 	name = 'firecrawlApi';
 	displayName = 'Firecrawl API';
 	documentationUrl = 'https://docs.firecrawl.dev';
+	icon: Icon = {
+		light: 'file:../nodes/Firecrawl/fc-flame.svg',
+		dark: 'file:../nodes/Firecrawl/fc-flame.dark.svg',
+	};
 
 	properties: INodeProperties[] = [
 		{

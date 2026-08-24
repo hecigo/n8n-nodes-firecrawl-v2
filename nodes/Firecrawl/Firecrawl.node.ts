@@ -3,6 +3,9 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	JsonObject,
+	NodeApiError,
+	NodeConnectionTypes,
 	NodeOperationError,
 	IHttpRequestMethods,
 	IHttpRequestOptions,
@@ -14,7 +17,7 @@ export class Firecrawl implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Firecrawl',
 		name: 'firecrawl',
-		icon: 'file:fc-flame.svg',
+		icon: { light: 'file:fc-flame.svg', dark: 'file:fc-flame.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"]}}',
@@ -22,8 +25,8 @@ export class Firecrawl implements INodeType {
 		defaults: {
 			name: 'Firecrawl',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'firecrawlApi',
@@ -39,22 +42,10 @@ export class Firecrawl implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Scrape',
-						value: 'scrape',
-						description: 'Scrape content from a single URL',
-						action: 'Scrape a URL',
-					},
-					{
-						name: 'Crawl',
-						value: 'crawl',
-						description: 'Start an async crawl job for an entire website',
-						action: 'Crawl a website',
-					},
-					{
-						name: 'Get Crawl Status',
-						value: 'getCrawlStatus',
-						description: 'Check the status of a crawl job',
-						action: 'Get crawl status',
+						name: 'Batch Scrape',
+						value: 'batchScrape',
+						description: 'Scrape multiple URLs asynchronously',
+						action: 'Batch scrape multiple pages',
 					},
 					{
 						name: 'Cancel Crawl',
@@ -63,16 +54,10 @@ export class Firecrawl implements INodeType {
 						action: 'Cancel a crawl',
 					},
 					{
-						name: 'Map',
-						value: 'map',
-						description: 'Discover all URLs on a website without scraping',
-						action: 'Map a website',
-					},
-					{
-						name: 'Search',
-						value: 'search',
-						description: 'Web search with optional page scraping',
-						action: 'Search the web',
+						name: 'Crawl',
+						value: 'crawl',
+						description: 'Start an async crawl job for an entire website',
+						action: 'Crawl a website',
 					},
 					{
 						name: 'Extract',
@@ -81,22 +66,40 @@ export class Firecrawl implements INodeType {
 						action: 'Extract structured data',
 					},
 					{
+						name: 'Get Batch Scrape Status',
+						value: 'getBatchScrapeStatus',
+						description: 'Check the status of a batch scrape job',
+						action: 'Get batch scrape status',
+					},
+					{
+						name: 'Get Crawl Status',
+						value: 'getCrawlStatus',
+						description: 'Check the status of a crawl job',
+						action: 'Get crawl status',
+					},
+					{
 						name: 'Get Extract Status',
 						value: 'getExtractStatus',
 						description: 'Check the status of an extract job',
 						action: 'Get extract status',
 					},
 					{
-						name: 'Batch Scrape',
-						value: 'batchScrape',
-						description: 'Scrape multiple URLs asynchronously',
-						action: 'Batch scrape URLs',
+						name: 'Map',
+						value: 'map',
+						description: 'Discover all URLs on a website without scraping',
+						action: 'Map a website',
 					},
 					{
-						name: 'Get Batch Scrape Status',
-						value: 'getBatchScrapeStatus',
-						description: 'Check the status of a batch scrape job',
-						action: 'Get batch scrape status',
+						name: 'Scrape',
+						value: 'scrape',
+						description: 'Scrape content from a single URL',
+						action: 'Scrape a URL',
+					},
+					{
+						name: 'Search',
+						value: 'search',
+						description: 'Web search with optional page scraping',
+						action: 'Search the web',
 					},
 				],
 				default: 'scrape',
@@ -122,38 +125,11 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['scrape'] } },
 				options: [
 					{
-						displayName: 'Formats',
-						name: 'formats',
-						type: 'multiOptions',
-						options: [
-							{ name: 'Markdown', value: 'markdown' },
-							{ name: 'HTML', value: 'html' },
-							{ name: 'Raw HTML', value: 'rawHtml' },
-							{ name: 'Links', value: 'links' },
-							{ name: 'Screenshot', value: 'screenshot' },
-							{ name: 'JSON', value: 'json' },
-							{ name: 'Summary', value: 'summary' },
-							{ name: 'Images', value: 'images' },
-							{ name: 'Audio', value: 'audio' },
-							{ name: 'Change Tracking', value: 'changeTracking' },
-						],
-						default: ['markdown'],
-						description: 'Output formats for the scraped content',
-					},
-					{
-						displayName: 'Only Main Content',
-						name: 'onlyMainContent',
+						displayName: 'Block Ads',
+						name: 'blockAds',
 						type: 'boolean',
 						default: true,
-						description: 'Whether to extract only the main content (strip headers, navs, footers)',
-					},
-					{
-						displayName: 'Include Tags',
-						name: 'includeTags',
-						type: 'string',
-						default: '',
-						placeholder: 'article, main, .content',
-						description: 'Comma-separated HTML tags/selectors to include',
+						description: 'Whether to block ads and cookie popups',
 					},
 					{
 						displayName: 'Exclude Tags',
@@ -164,58 +140,31 @@ export class Firecrawl implements INodeType {
 						description: 'Comma-separated HTML tags/selectors to exclude',
 					},
 					{
-						displayName: 'Wait For (ms)',
-						name: 'waitFor',
-						type: 'number',
-						default: 0,
-						description: 'Milliseconds to wait before scraping (for JS-rendered pages)',
-					},
-					{
-						displayName: 'Timeout (ms)',
-						name: 'timeout',
-						type: 'number',
-						default: 30000,
-						description: 'Request timeout in milliseconds (1000-300000)',
-					},
-					{
-						displayName: 'Mobile',
-						name: 'mobile',
-						type: 'boolean',
-						default: false,
-						description: 'Whether to emulate a mobile device',
-					},
-					{
-						displayName: 'Remove Base64 Images',
-						name: 'removeBase64Images',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to remove base64 encoded images from output',
-					},
-					{
-						displayName: 'Block Ads',
-						name: 'blockAds',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to block ads and cookie popups',
-					},
-					{
-						displayName: 'Skip TLS Verification',
-						name: 'skipTlsVerification',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to skip TLS certificate verification',
-					},
-					{
-						displayName: 'Proxy',
-						name: 'proxy',
-						type: 'options',
+						displayName: 'Formats',
+						name: 'formats',
+						type: 'multiOptions',
 						options: [
-							{ name: 'Auto', value: 'auto' },
-							{ name: 'Basic', value: 'basic' },
-							{ name: 'Enhanced', value: 'enhanced' },
+							{ name: 'Audio', value: 'audio' },
+							{ name: 'Change Tracking', value: 'changeTracking' },
+							{ name: 'HTML', value: 'html' },
+							{ name: 'Images', value: 'images' },
+							{ name: 'JSON', value: 'json' },
+							{ name: 'Links', value: 'links' },
+							{ name: 'Markdown', value: 'markdown' },
+							{ name: 'Raw HTML', value: 'rawHtml' },
+							{ name: 'Screenshot', value: 'screenshot' },
+							{ name: 'Summary', value: 'summary' },
 						],
-						default: 'auto',
-						description: 'Proxy type to use for scraping',
+						default: ['markdown'],
+						description: 'Output formats for the scraped content',
+					},
+					{
+						displayName: 'Include Tags',
+						name: 'includeTags',
+						type: 'string',
+						default: '',
+						placeholder: 'article, main, .content',
+						description: 'Comma-separated HTML tags/selectors to include',
 					},
 					{
 						displayName: 'Location Country',
@@ -232,6 +181,60 @@ export class Firecrawl implements INodeType {
 						default: '',
 						placeholder: 'en-US, vi-VN',
 						description: 'Comma-separated preferred languages/locales',
+					},
+					{
+						displayName: 'Mobile',
+						name: 'mobile',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to emulate a mobile device',
+					},
+					{
+						displayName: 'Only Main Content',
+						name: 'onlyMainContent',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to extract only the main content (strip headers, navs, footers)',
+					},
+					{
+						displayName: 'Proxy',
+						name: 'proxy',
+						type: 'options',
+						options: [
+							{ name: 'Auto', value: 'auto' },
+							{ name: 'Basic', value: 'basic' },
+							{ name: 'Enhanced', value: 'enhanced' },
+						],
+						default: 'auto',
+						description: 'Proxy type to use for scraping',
+					},
+					{
+						displayName: 'Remove Base64 Images',
+						name: 'removeBase64Images',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to remove base64 encoded images from output',
+					},
+					{
+						displayName: 'Skip TLS Verification',
+						name: 'skipTlsVerification',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to skip TLS certificate verification',
+					},
+					{
+						displayName: 'Timeout (Milliseconds)',
+						name: 'timeout',
+						type: 'number',
+						default: 30000,
+						description: 'Request timeout in milliseconds (1000-300000)',
+					},
+					{
+						displayName: 'Wait For (Milliseconds)',
+						name: 'waitFor',
+						type: 'number',
+						default: 0,
+						description: 'Milliseconds to wait before scraping (for JS-rendered pages)',
 					},
 				],
 			},
@@ -256,7 +259,7 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['crawl'] } },
 			},
 			{
-				displayName: 'Max Poll Time (s)',
+				displayName: 'Max Poll Time (Seconds)',
 				name: 'maxPollTime',
 				type: 'number',
 				default: 300,
@@ -272,55 +275,6 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['crawl'] } },
 				options: [
 					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 100,
-						description: 'Maximum number of pages to crawl (API default: 10000)',
-					},
-					{
-						displayName: 'Max Discovery Depth',
-						name: 'maxDiscoveryDepth',
-						type: 'number',
-						default: 2,
-						description: 'Maximum crawl depth based on discovery order',
-					},
-					{
-						displayName: 'Include Paths',
-						name: 'includePaths',
-						type: 'string',
-						default: '',
-						placeholder: '/blog/*, /docs/*',
-						description: 'Comma-separated URL path regex patterns to include',
-					},
-					{
-						displayName: 'Exclude Paths',
-						name: 'excludePaths',
-						type: 'string',
-						default: '',
-						placeholder: '/admin/*, /login',
-						description: 'Comma-separated URL path regex patterns to exclude',
-					},
-					{
-						displayName: 'Sitemap',
-						name: 'sitemap',
-						type: 'options',
-						options: [
-							{ name: 'Include', value: 'include' },
-							{ name: 'Skip', value: 'skip' },
-							{ name: 'Only', value: 'only' },
-						],
-						default: 'include',
-						description: 'How to handle sitemap.xml',
-					},
-					{
-						displayName: 'Crawl Entire Domain',
-						name: 'crawlEntireDomain',
-						type: 'boolean',
-						default: false,
-						description: 'Whether to follow sibling/parent links across the entire domain',
-					},
-					{
 						displayName: 'Allow External Links',
 						name: 'allowExternalLinks',
 						type: 'boolean',
@@ -335,6 +289,28 @@ export class Firecrawl implements INodeType {
 						description: 'Whether to crawl subdomains',
 					},
 					{
+						displayName: 'Crawl Entire Domain',
+						name: 'crawlEntireDomain',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to follow sibling/parent links across the entire domain',
+					},
+					{
+						displayName: 'Delay (Seconds)',
+						name: 'delay',
+						type: 'number',
+						default: 0,
+						description: 'Seconds to wait between scrapes (forces concurrency=1)',
+					},
+					{
+						displayName: 'Exclude Paths',
+						name: 'excludePaths',
+						type: 'string',
+						default: '',
+						placeholder: '/admin/*, /login',
+						description: 'Comma-separated URL path regex patterns to exclude',
+					},
+					{
 						displayName: 'Ignore Query Parameters',
 						name: 'ignoreQueryParameters',
 						type: 'boolean',
@@ -342,11 +318,22 @@ export class Firecrawl implements INodeType {
 						description: 'Whether to ignore query parameters when deduplicating URLs',
 					},
 					{
-						displayName: 'Delay (seconds)',
-						name: 'delay',
+						displayName: 'Include Paths',
+						name: 'includePaths',
+						type: 'string',
+						default: '',
+						placeholder: '/blog/*, /docs/*',
+						description: 'Comma-separated URL path regex patterns to include',
+					},
+					{
+						displayName: 'Limit',
+						name: 'limit',
 						type: 'number',
-						default: 0,
-						description: 'Seconds to wait between scrapes (forces concurrency=1)',
+						typeOptions: {
+							minValue: 1,
+						},
+						default: 50,
+						description: 'Max number of results to return',
 					},
 					{
 						displayName: 'Max Concurrency',
@@ -356,18 +343,11 @@ export class Firecrawl implements INodeType {
 						description: 'Maximum concurrent scrapes (0 = no limit)',
 					},
 					{
-						displayName: 'Scrape Formats',
-						name: 'formats',
-						type: 'multiOptions',
-						options: [
-							{ name: 'Markdown', value: 'markdown' },
-							{ name: 'HTML', value: 'html' },
-							{ name: 'Raw HTML', value: 'rawHtml' },
-							{ name: 'Links', value: 'links' },
-							{ name: 'Screenshot', value: 'screenshot' },
-						],
-						default: ['markdown'],
-						description: 'Output formats for scraped pages',
+						displayName: 'Max Discovery Depth',
+						name: 'maxDiscoveryDepth',
+						type: 'number',
+						default: 2,
+						description: 'Maximum crawl depth based on discovery order',
 					},
 					{
 						displayName: 'Only Main Content',
@@ -375,6 +355,32 @@ export class Firecrawl implements INodeType {
 						type: 'boolean',
 						default: true,
 						description: 'Whether to strip headers, navs, and footers from scraped pages',
+					},
+					{
+						displayName: 'Scrape Formats',
+						name: 'formats',
+						type: 'multiOptions',
+						options: [
+							{ name: 'HTML', value: 'html' },
+							{ name: 'Links', value: 'links' },
+							{ name: 'Markdown', value: 'markdown' },
+							{ name: 'Raw HTML', value: 'rawHtml' },
+							{ name: 'Screenshot', value: 'screenshot' },
+						],
+						default: ['markdown'],
+						description: 'Output formats for scraped pages',
+					},
+					{
+						displayName: 'Sitemap',
+						name: 'sitemap',
+						type: 'options',
+						options: [
+							{ name: 'Include', value: 'include' },
+							{ name: 'Skip', value: 'skip' },
+							{ name: 'Only', value: 'only' },
+						],
+						default: 'include',
+						description: 'How to handle sitemap.xml',
 					},
 				],
 			},
@@ -421,6 +427,38 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['map'] } },
 				options: [
 					{
+						displayName: 'Ignore Cache',
+						name: 'ignoreCache',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to bypass the sitemap cache for fresh URLs',
+					},
+					{
+						displayName: 'Ignore Query Parameters',
+						name: 'ignoreQueryParameters',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to exclude URLs with query parameters',
+					},
+					{
+						displayName: 'Include Subdomains',
+						name: 'includeSubdomains',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to include subdomains in the map',
+					},
+					{
+						displayName: 'Limit',
+						name: 'limit',
+						type: 'number',
+						typeOptions: {
+							minValue: 1,
+							maxValue: 100000,
+						},
+						default: 50,
+						description: 'Max number of results to return',
+					},
+					{
 						displayName: 'Search',
 						name: 'search',
 						type: 'string',
@@ -440,35 +478,7 @@ export class Firecrawl implements INodeType {
 						description: 'How to handle sitemap.xml',
 					},
 					{
-						displayName: 'Include Subdomains',
-						name: 'includeSubdomains',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to include subdomains in the map',
-					},
-					{
-						displayName: 'Ignore Query Parameters',
-						name: 'ignoreQueryParameters',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to exclude URLs with query parameters',
-					},
-					{
-						displayName: 'Ignore Cache',
-						name: 'ignoreCache',
-						type: 'boolean',
-						default: false,
-						description: 'Whether to bypass the sitemap cache for fresh URLs',
-					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 5000,
-						description: 'Maximum number of links to return (max 100000)',
-					},
-					{
-						displayName: 'Timeout (ms)',
+						displayName: 'Timeout (Milliseconds)',
 						name: 'timeout',
 						type: 'number',
 						default: 0,
@@ -497,19 +507,23 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['search'] } },
 				options: [
 					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 5,
-						description: 'Number of results (1-100)',
-					},
-					{
 						displayName: 'Country',
 						name: 'country',
 						type: 'string',
 						default: 'US',
 						placeholder: 'US',
 						description: 'ISO country code for geo-targeting',
+					},
+					{
+						displayName: 'Limit',
+						name: 'limit',
+						type: 'number',
+						typeOptions: {
+							minValue: 1,
+							maxValue: 100,
+						},
+						default: 50,
+						description: 'Max number of results to return',
 					},
 					{
 						displayName: 'Location',
@@ -520,47 +534,47 @@ export class Firecrawl implements INodeType {
 						description: 'Geo-targeted location string',
 					},
 					{
-						displayName: 'Time Filter',
-						name: 'tbs',
-						type: 'options',
-						options: [
-							{ name: 'Any Time', value: '' },
-							{ name: 'Past Hour', value: 'qdr:h' },
-							{ name: 'Past Day', value: 'qdr:d' },
-							{ name: 'Past Week', value: 'qdr:w' },
-							{ name: 'Past Month', value: 'qdr:m' },
-							{ name: 'Past Year', value: 'qdr:y' },
-						],
-						default: '',
-						description: 'Filter results by time range',
-					},
-					{
-						displayName: 'Timeout (ms)',
-						name: 'timeout',
-						type: 'number',
-						default: 60000,
-						description: 'Timeout in milliseconds',
+						displayName: 'Only Main Content',
+						name: 'onlyMainContent',
+						type: 'boolean',
+						default: true,
+						description: 'Whether to strip headers, navs, and footers from scraped pages',
 					},
 					{
 						displayName: 'Scrape Formats',
 						name: 'formats',
 						type: 'multiOptions',
 						options: [
-							{ name: 'Markdown', value: 'markdown' },
 							{ name: 'HTML', value: 'html' },
-							{ name: 'Raw HTML', value: 'rawHtml' },
 							{ name: 'Links', value: 'links' },
+							{ name: 'Markdown', value: 'markdown' },
+							{ name: 'Raw HTML', value: 'rawHtml' },
 							{ name: 'Screenshot', value: 'screenshot' },
 						],
 						default: ['markdown'],
 						description: 'Output formats for scraped result pages',
 					},
 					{
-						displayName: 'Only Main Content',
-						name: 'onlyMainContent',
-						type: 'boolean',
-						default: true,
-						description: 'Whether to strip headers, navs, and footers from scraped pages',
+						displayName: 'Time Filter',
+						name: 'tbs',
+						type: 'options',
+						options: [
+							{ name: 'Any Time', value: '' },
+							{ name: 'Past Day', value: 'qdr:d' },
+							{ name: 'Past Hour', value: 'qdr:h' },
+							{ name: 'Past Month', value: 'qdr:m' },
+							{ name: 'Past Week', value: 'qdr:w' },
+							{ name: 'Past Year', value: 'qdr:y' },
+						],
+						default: '',
+						description: 'Filter results by time range',
+					},
+					{
+						displayName: 'Timeout (Milliseconds)',
+						name: 'timeout',
+						type: 'number',
+						default: 60000,
+						description: 'Timeout in milliseconds',
 					},
 				],
 			},
@@ -604,7 +618,7 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['extract'] } },
 			},
 			{
-				displayName: 'Max Poll Time (s)',
+				displayName: 'Max Poll Time (Seconds)',
 				name: 'extractMaxPollTime',
 				type: 'number',
 				default: 300,
@@ -681,7 +695,7 @@ export class Firecrawl implements INodeType {
 				displayOptions: { show: { operation: ['batchScrape'] } },
 			},
 			{
-				displayName: 'Max Poll Time (s)',
+				displayName: 'Max Poll Time (Seconds)',
 				name: 'batchMaxPollTime',
 				type: 'number',
 				default: 300,
@@ -701,10 +715,10 @@ export class Firecrawl implements INodeType {
 						name: 'formats',
 						type: 'multiOptions',
 						options: [
-							{ name: 'Markdown', value: 'markdown' },
 							{ name: 'HTML', value: 'html' },
-							{ name: 'Raw HTML', value: 'rawHtml' },
 							{ name: 'Links', value: 'links' },
+							{ name: 'Markdown', value: 'markdown' },
+							{ name: 'Raw HTML', value: 'rawHtml' },
 							{ name: 'Screenshot', value: 'screenshot' },
 						],
 						default: ['markdown'],
@@ -739,6 +753,7 @@ export class Firecrawl implements INodeType {
 			},
 
 		],
+		usableAsTool: true,
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
@@ -783,24 +798,38 @@ export class Firecrawl implements INodeType {
 					case 'getBatchScrapeStatus':
 						responseData = await executeGetBatchScrapeStatus.call(this, i, baseUrl);
 						break;
-						default:
+					default:
 						throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`, { description: HELP_NOTICE });
 				}
 
+				// pairedItem links each output item back to the input item that produced
+				// it. Without it, `$('Firecrawl').item` downstream returns the wrong item
+				// whenever the node runs on more than one input.
 				if (Array.isArray(responseData)) {
-					returnData.push(...responseData.map((d: any) => ({ json: d })));
+					returnData.push(...responseData.map((d: any) => ({ json: d, pairedItem: { item: i } })));
 				} else {
-					returnData.push({ json: responseData });
+					returnData.push({ json: responseData, pairedItem: { item: i } });
 				}
 			} catch (error: any) {
+				// Errors we raised ourselves already carry node context; anything else
+				// (network, timeout, malformed response) gets wrapped so the HTTP details
+				// survive into the n8n UI instead of surfacing as a raw throw.
+				const nodeError =
+					error instanceof NodeApiError || error instanceof NodeOperationError
+						? error
+						: new NodeApiError(this.getNode(), error as JsonObject, {
+								itemIndex: i,
+								description: HELP_NOTICE,
+							});
+
 				if (this.continueOnFail()) {
 					returnData.push({
-						json: { error: error.message },
+						json: { error: nodeError.message },
 						pairedItem: { item: i },
 					});
 					continue;
 				}
-				throw error;
+				throw nodeError;
 			}
 		}
 
