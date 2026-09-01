@@ -4,7 +4,9 @@
 
 Community node for [Firecrawl](https://firecrawl.dev) **v2 API** on n8n. Scrape, crawl, map, search, and extract web content with full JavaScript rendering and AI-powered extraction.
 
-Works with both **Firecrawl Cloud** and **self-hosted** instances.
+Works against both **Firecrawl Cloud** and a **self-hosted Firecrawl** instance: point the credential Base URL wherever your API lives.
+
+> **Requires self-hosted n8n.** This node is not n8n-verified, and [unverified community nodes are not available on n8n Cloud](https://docs.n8n.io/integrations/community-nodes/installation-and-management/). If you are on n8n Cloud, our [n8n-nodes-zalo-platform](https://github.com/hecigo/n8n-nodes-zalo-platform) is verified and installs straight from the nodes panel.
 
 Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
@@ -12,7 +14,7 @@ Built by [hecigo](https://hecigo.com) — Middleware & Integration Lab.
 
 ## Installation
 
-### n8n Community Nodes
+### Self-hosted n8n
 
 1. Go to **Settings** > **Community Nodes**
 2. Select **Install**
@@ -252,7 +254,7 @@ Schedule Trigger (daily)
 
 [hecigo](https://hecigo.com) is a middleware and integration lab. We build and run the layer that makes disconnected business systems talk to each other — with the right data, and nothing lost. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://hecigo.com/#contact).
 
-**Other n8n nodes by hecigo:** [n8n-nodes-zalo-platform](https://github.com/hecigo/n8n-nodes-zalo-platform) — Zalo Bot Platform on n8n: webhook trigger, replies, photos, stickers and chat actions.
+**Other n8n nodes by hecigo:** [n8n-nodes-zalo-platform](https://github.com/hecigo/n8n-nodes-zalo-platform) — Zalo Bot Platform on n8n: webhook trigger, replies, photos, stickers and chat actions. n8n-verified, runs on n8n Cloud.
 
 Consulting partner: [THE NEXOVA](https://thenexova.com) — Bridge Strategy to Execution.
 
