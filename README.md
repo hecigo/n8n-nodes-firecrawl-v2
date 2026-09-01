@@ -1,5 +1,7 @@
 # n8n-nodes-firecrawl-v2
 
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-firecrawl-v2)](https://www.npmjs.com/package/n8n-nodes-firecrawl-v2) [![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-firecrawl-v2)](https://www.npmjs.com/package/n8n-nodes-firecrawl-v2) [![license](https://img.shields.io/npm/l/n8n-nodes-firecrawl-v2)](LICENSE)
+
 Community node for [Firecrawl](https://firecrawl.dev) **v2 API** on n8n. Scrape, crawl, map, search, and extract web content with full JavaScript rendering and AI-powered extraction.
 
 Works with both **Firecrawl Cloud** and **self-hosted** instances.
@@ -249,6 +251,8 @@ Schedule Trigger (daily)
 ## About
 
 [hecigo](https://hecigo.com) is a middleware and integration lab. We build and run the layer that makes disconnected business systems talk to each other — with the right data, and nothing lost. Need custom n8n nodes, self-hosted Firecrawl deployment, or scraping workflow design? [Get in touch](https://hecigo.com/#contact).
+
+**Other n8n nodes by hecigo:** [n8n-nodes-zalo-platform](https://github.com/hecigo/n8n-nodes-zalo-platform) — Zalo Bot Platform on n8n: webhook trigger, replies, photos, stickers and chat actions.
 
 Consulting partner: [THE NEXOVA](https://thenexova.com) — Bridge Strategy to Execution.
 
